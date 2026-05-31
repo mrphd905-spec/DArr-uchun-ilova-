@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>DreamArt — Mijoz</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#080d18;--card:#0f1826;--card2:#131e2e;--border:#1a2840;
+  --text:#e2e8f0;--muted:#5a6a85;--accent:#3b82f6;--green:#22c55e;
+  --yellow:#f59e0b;--red:#ef4444;--purple:#8b5cf6;
+}
+body{font-family:'Segoe UI',sans-serif;background:radial-gradient(900px 500px at 50% -10%,#13213b,#080d18);color:var(--text);min-height:100vh;display:flex;justify-content:center}
+.phone{width:100%;max-width:430px;min-height:100vh;background:var(--bg);position:relative;display:flex;flex-direction:column;box-shadow:0 0 60px rgba(0,0,0,.5)}
+
+/* HEADER */
+.hdr{padding:14px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border);background:var(--card);position:sticky;top:0;z-index:10}
+.hdr .logo{width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,#1d4ed8,#7c3aed);display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-size:13px;box-shadow:0 0 14px rgba(124,58,237,.5)}
+.hdr .t1{font-size:14px;font-weight:700}
+.hdr .t2{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px}
+.hdr .bot-tag{margin-left:auto;font-size:10px;color:var(--accent);background:rgba(59,130,246,.1);border:1px solid rgba(59,130,246,.3);padding:3px 8px;border-radius:8px}
+
+/* PROGRESS */
+.steps{display:flex;gap:6px;padding:12px 16px;background:var(--card)}
+.step-dot{flex:1;height:4px;border-radius:3px;background:var(--border);transition:background .25s}
+.step-dot.done{background:var(--green)}
+.step-dot.active{background:var(--accent)}
+
+/* BODY */
+.body{flex:1;padding:18px 16px 100px;overflow-y:auto}
+.screen{display:none;animation:fade .25s}
+.screen.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.scr-title{font-size:20px;font-weight:800;margin-bottom:4px}
+.scr-sub{font-size:13px;color:var(--muted);margin-bottom:20px;line-height:1.5}
+
+/* FIELDS */
+.field{margin-bottom:14px}
+.field label{font-size:12px;color:var(--muted);display:block;margin-bottom:6px;font-weight:500}
+.field label .req{color:var(--red)}
+.inp{width:100%;background:var(--card2);border:1px solid var(--border);border-radius:12px;padding:13px 15px;color:var(--text);font-size:15px;outline:none;transition:border-color .15s}
+.inp:focus{border-color:var(--accent)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+/* UPLOAD */
+.up{background:var(--card2);border:1.5px dashed var(--border);border-radius:14px;padding:18px;display:flex;flex-direction:column;align-items:center;gap:7px;cursor:pointer;text-align:center;transition:all .15s}
+.up:hover{border-color:var(--accent)}
+.up .ico{font-size:28px}
+.up .lbl{font-size:12.5px;font-weight:600}
+.up .hint{font-size:10.5px;color:var(--muted)}
+.up.filled{border-style:solid;border-color:var(--green)}
+.up-prev{width:100%;max-height:160px;object-fit:contain;border-radius:10px;margin-top:6px}
+.up-circle{width:96px;height:96px;border-radius:50%;object-fit:cover;border:2px solid var(--green)}
+
+/* BIG BUTTON */
+.btn{width:100%;padding:15px;border:none;border-radius:14px;font-size:15px;font-weight:700;cursor:pointer;transition:transform .1s;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn:active{transform:scale(.98)}
+.btn-primary{background:linear-gradient(135deg,#1d4ed8,#3b82f6);color:#fff;box-shadow:0 4px 16px rgba(59,130,246,.35)}
+.btn-green{background:linear-gradient(135deg,#15803d,#22c55e);color:#fff;box-shadow:0 4px 16px rgba(34,197,94,.35)}
+.btn-tg{background:#229ed9;color:#fff;box-shadow:0 4px 16px rgba(34,158,217,.35)}
+.btn-ghost{background:transparent;border:1px solid var(--border);color:var(--muted)}
+.foot{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;padding:14px 16px;background:linear-gradient(to top,var(--bg) 70%,transparent);display:flex;gap:10px}
+
+/* welcome */
+.welcome-hero{text-align:center;padding:30px 0 24px}
+.welcome-hero .big-logo{width:84px;height:84px;border-radius:24px;background:linear-gradient(135deg,#1d4ed8,#7c3aed);display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:800;color:#fff;margin:0 auto 16px;box-shadow:0 0 30px rgba(124,58,237,.55)}
+.welcome-hero h1{font-size:24px;font-weight:800}
+.welcome-hero p{font-size:13px;color:var(--muted);margin-top:6px}
+.feat{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:10px}
+.feat .fi{width:42px;height:42px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.feat .ft{font-size:13.5px;font-weight:600}
+.feat .fs{font-size:11.5px;color:var(--muted);margin-top:2px}
+
+/* agreement */
+.agree-box{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;font-size:12.5px;line-height:1.7;color:#cbd5e1;max-height:300px;overflow-y:auto;margin-bottom:14px}
+.agree-box h4{color:var(--text);font-size:13px;margin:10px 0 4px}
+.agree-box ul{margin-left:16px}
+.chk-row{display:flex;align-items:flex-start;gap:10px;background:var(--card2);border:1px solid var(--border);border-radius:12px;padding:13px;cursor:pointer}
+.chk-row input{width:20px;height:20px;accent-color:var(--green);flex-shrink:0;margin-top:1px}
+.chk-row span{font-size:13px}
+
+/* device cards */
+.cat-pills{display:flex;gap:8px;overflow-x:auto;padding-bottom:8px;margin-bottom:14px}
+.cat-pill{flex-shrink:0;padding:9px 14px;border-radius:11px;border:1px solid var(--border);background:var(--card);color:var(--muted);font-size:13px;cursor:pointer;display:flex;align-items:center;gap:6px;white-space:nowrap}
+.cat-pill.active{border-color:var(--accent);color:var(--accent);background:rgba(59,130,246,.1)}
+.dev{display:flex;align-items:center;gap:12px;background:var(--card);border:1.5px solid var(--border);border-radius:14px;padding:13px;margin-bottom:10px;cursor:pointer;transition:all .15s}
+.dev.sel{border-color:var(--green);background:rgba(34,197,94,.06)}
+.dev .dico{width:46px;height:46px;border-radius:12px;background:var(--card2);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.dev .dn{font-size:14px;font-weight:600}
+.dev .dp{font-size:12px;color:var(--green);margin-top:2px}
+.dev .dstock{font-size:10.5px;color:var(--muted);margin-top:2px}
+.dev .dcheck{margin-left:auto;width:24px;height:24px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;flex-shrink:0}
+.dev.sel .dcheck{background:var(--green);border-color:var(--green)}
+
+/* calendar */
+.cal{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:14px}
+.cal-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.cal-nav{width:30px;height:30px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:16px;cursor:pointer}
+.cal-my{font-size:14px;font-weight:700}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+.cal-dn{text-align:center;font-size:10px;color:var(--muted);padding:4px 0}
+.cal-d{text-align:center;padding:9px 0;border-radius:9px;font-size:13px;cursor:pointer}
+.cal-d:hover:not(.empty){background:rgba(59,130,246,.12)}
+.cal-d.today{box-shadow:inset 0 0 0 1px var(--accent)}
+.cal-d.sel{background:var(--green);color:#fff;font-weight:700}
+.cal-d.range{background:rgba(34,197,94,.18);color:var(--green)}
+.cal-d.empty{cursor:default}
+.time2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.time2 select{width:100%;background:var(--card2);border:1px solid var(--border);border-radius:11px;padding:11px;color:var(--text);font-size:14px;text-align:center;font-weight:600;outline:none}
+
+/* summary */
+.sum{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:14px}
+.sum-row{display:flex;justify-content:space-between;padding:8px 0;font-size:13px;border-bottom:1px solid var(--border)}
+.sum-row:last-child{border:none}
+.sum-row .k{color:var(--muted)}
+.sum-row .v{font-weight:600}
+.sum-total{display:flex;justify-content:space-between;align-items:center;background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.3);border-radius:12px;padding:13px 15px;margin-top:8px}
+.sum-total .v{font-size:19px;font-weight:800;color:var(--green)}
+
+/* success */
+.success{text-align:center;padding:40px 10px}
+.success .ok{width:96px;height:96px;border-radius:50%;background:rgba(34,197,94,.12);border:2px solid var(--green);display:flex;align-items:center;justify-content:center;font-size:46px;margin:0 auto 20px}
+.success h2{font-size:22px;font-weight:800;margin-bottom:8px}
+.success p{font-size:13.5px;color:var(--muted);line-height:1.6;margin-bottom:6px}
+.status-pill{display:inline-flex;align-items:center;gap:6px;background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.35);color:var(--yellow);padding:8px 14px;border-radius:11px;font-size:12.5px;font-weight:600;margin-top:14px}
+.tg-note{font-size:11px;color:var(--muted);text-align:center;margin-top:12px;line-height:1.6;padding:0 10px}
+.banner{background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.3);border-radius:12px;padding:11px 13px;font-size:12px;color:var(--yellow);margin-bottom:16px;display:flex;gap:8px;line-height:1.5}
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="hdr">
+    <div class="logo">DA</div>
+    <div><div class="t1">DreamArt Rental</div><div class="t2">Mijoz kabineti</div></div>
+    <div class="bot-tag">✈️ Telegram Mini App</div>
+  </div>
+  <div class="steps" id="steps">
+    <div class="step-dot active"></div>
+    <div class="step-dot"></div>
+    <div class="step-dot"></div>
+    <div class="step-dot"></div>
+    <div class="step-dot"></div>
+  </div>
+  <div class="body">
+
+    <!-- 0: WELCOME -->
+    <div class="screen active" id="s0">
+      <div class="welcome-hero">
+        <div class="big-logo">DA</div>
+        <h1>Xush kelibsiz! 👋</h1>
+        <p>Texnikani bron qilish uchun bir marta ro'yxatdan o'ting</p>
+      </div>
+      <div class="feat"><div class="fi" style="background:rgba(59,130,246,.12)">📝</div><div><div class="ft">Sodda ro'yxatdan o'tish</div><div class="fs">Faqat 4 ta maydon — 1 daqiqada</div></div></div>
+      <div class="feat"><div class="fi" style="background:rgba(34,197,94,.12)">📅</div><div><div class="ft">Onlayn bron</div><div class="fs">Sana va texnikani o'zingiz tanlaysiz</div></div></div>
+      <div class="feat"><div class="fi" style="background:rgba(139,92,246,.12)">🔔</div><div><div class="ft">Eslatmalar</div><div class="fs">Telegram va SMS orqali xabar</div></div></div>
+    </div>
+
+    <!-- 1: PHONE -->
+    <div class="screen" id="s1">
+      <div class="scr-title">Telefon raqamingiz</div>
+      <div class="scr-sub">Telegram'da bu raqam "Kontaktni ulashish" tugmasi orqali avtomatik to'ldiriladi.</div>
+      <button class="btn btn-tg" style="margin-bottom:14px" onclick="shareContact()">📲 Kontaktni ulashish (Telegram)</button>
+      <div class="field">
+        <label>Yoki qo'lda kiriting <span class="req">*</span></label>
+        <input class="inp" id="r-phone" inputmode="tel" placeholder="+998 90 000 00 00" oninput="fmtPhone(this)">
+      </div>
+      <div class="tg-note">📌 Demo rejimda raqamni qo'lda kiriting. Haqiqiy botda u avtomatik keladi.</div>
+    </div>
+
+    <!-- 2: REGISTRATION -->
+    <div class="screen" id="s2">
+      <div class="scr-title">Ma'lumotlaringiz</div>
+      <div class="scr-sub">Faqat eng kerakli ma'lumotlar. Qolganini operator tekshiradi.</div>
+      <div class="row2">
+        <div class="field"><label>Ism <span class="req">*</span></label><input class="inp" id="r-ism" placeholder="Ism"></div>
+        <div class="field"><label>Familiya <span class="req">*</span></label><input class="inp" id="r-fam" placeholder="Familiya"></div>
+      </div>
+      <div class="field">
+        <label>3×4 rasmingiz</label>
+        <label class="up" id="up-photo">
+          <span class="ico">📸</span><span class="lbl">Rasm yuklash / suratga olish</span><span class="hint">Fayldan yoki kameradan</span>
+          <input type="file" accept="image/*" capture="user" style="display:none" onchange="prev(this,'photo')">
+        </label>
+      </div>
+      <div class="field">
+        <label>Pasport / ID karta rasmi <span class="req">*</span></label>
+        <label class="up" id="up-pass">
+          <span class="ico">🪪</span><span class="lbl">Pasport rasmini yuklash</span><span class="hint">Operator tekshirishi uchun</span>
+          <input type="file" accept="image/*" capture="environment" style="display:none" onchange="prev(this,'pass')">
+        </label>
+      </div>
+    </div>
+
+    <!-- 3: AGREEMENT -->
+    <div class="screen" id="s3">
+      <div class="scr-title">Ijara kelishuvi 📝</div>
+      <div class="scr-sub">Iltimos, shartlar bilan tanishing va rozilik bildiring.</div>
+      <div class="agree-box">
+        <h4>1. Umumiy shartlar</h4>
+        Mijoz texnikani belgilangan muddatda, soz holatda qaytarishga rozilik bildiradi.
+        <h4>2. Javobgarlik</h4>
+        <ul>
+          <li>Texnika buzilsa yoki yo'qolsa, mijoz to'liq qiymatini qoplaydi.</li>
+          <li>Kechiktirilgan har bir kun uchun qo'shimcha to'lov olinadi.</li>
+        </ul>
+        <h4>3. To'lov</h4>
+        Oldindan to'lov (avans) talab qilinishi mumkin. Qolgan summa qabul vaqtida to'lanadi.
+        <h4>4. Ma'lumotlar</h4>
+        Mijoz bergan ma'lumotlar (pasport, telefon) faqat ijara maqsadida saqlanadi.
+      </div>
+      <label class="chk-row" onclick="setTimeout(updFoot,0)">
+        <input type="checkbox" id="agree-chk">
+        <span>Yuqoridagi shartlarni o'qib chiqdim va to'liq <b>roziman</b>. ✅</span>
+      </label>
+    </div>
+
+    <!-- 4: BOOKING -->
+    <div class="screen" id="s4">
+      <div class="scr-title">Texnikani bron qiling</div>
+      <div class="scr-sub">Kategoriya, texnika va sanani tanlang.</div>
+      <div class="cat-pills" id="cat-pills"></div>
+      <div id="dev-list"></div>
+      <div style="font-size:13px;font-weight:700;margin:16px 0 8px">📅 Sanani tanlang</div>
+      <div class="cal" id="cal"></div>
+      <div class="time2">
+        <select id="t1"><option>08:00</option><option selected>10:00</option><option>12:00</option><option>14:00</option><option>16:00</option></select>
+        <select id="t2"><option>14:00</option><option>16:00</option><option selected>18:00</option><option>20:00</option></select>
+      </div>
+    </div>
+
+    <!-- 5: CONFIRM -->
+    <div class="screen" id="s5">
+      <div class="scr-title">Tasdiqlash</div>
+      <div class="scr-sub">Ma'lumotlarni tekshiring va bronni yuboring.</div>
+      <div class="banner">⚠️ Bron operator tomonidan tasdiqlangach kuchga kiradi. Sizga xabar yuboriladi.</div>
+      <div class="sum" id="confirm-sum"></div>
+    </div>
+
+    <!-- 6: SUCCESS -->
+    <div class="screen" id="s6">
+      <div class="success">
+        <div class="ok">✓</div>
+        <h2>Arizangiz qabul qilindi!</h2>
+        <p>Ro'yxatdan o'tdingiz va bron so'rovingiz yuborildi.</p>
+        <div class="status-pill">⏳ Operator tasdig'i kutilmoqda</div>
+        <div class="tg-note">✈️ Tasdiqlangach, Telegram va SMS orqali xabar olasiz.<br>Savol bo'lsa: +998 90 000 00 00</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- FOOTER BUTTONS -->
+  <div class="foot" id="foot">
+    <button class="btn btn-ghost" id="btn-back" style="flex:0 0 auto;width:54px" onclick="back()">‹</button>
+    <button class="btn btn-primary" id="btn-next" onclick="next()">Davom etish</button>
+  </div>
+</div>
+
+<script>
+let step=0;const MAX=6;
+const photos={photo:null,pass:null};
+
+const cats=[
+  {id:'foto',name:'📷 Foto',devs:[
+    {ico:'📷',name:'Canon EOS 5D Mark IV',price:150000,stock:4},
+    {ico:'📷',name:'Sony A7 III',price:120000,stock:3}
+  ]},
+  {id:'qurilish',name:'⚡ Qurilish',devs:[
+    {ico:'⚡',name:'Generator Honda 3kW',price:90000,stock:10}
+  ]}
+];
+let curCat='foto',selDev=null,calY,calM,sel=[];
+
+function fmtPhone(inp){let v=inp.value.replace(/\D/g,'');if(v.startsWith('998'))v=v.slice(3);
+  if(v.length>2&&v.length<=5)v=v.slice(0,2)+' '+v.slice(2);
+  else if(v.length>5&&v.length<=7)v=v.slice(0,2)+' '+v.slice(2,5)+' '+v.slice(5);
+  else if(v.length>7)v=v.slice(0,2)+' '+v.slice(2,5)+' '+v.slice(5,7)+' '+v.slice(7,9);
+  inp.value=v?'+998 '+v:'';updFoot()}
+function shareContact(){document.getElementById('r-phone').value='+998 90 123 45 67';updFoot()}
+function prev(input,key){const f=input.files[0];if(!f)return;const r=new FileReader();r.onload=e=>{photos[key]=e.target.result;
+  const box=input.closest('.up');box.classList.add('filled');
+  box.querySelector('.lbl').textContent='✓ Yuklandi';
+  let img=box.querySelector('.up-prev');if(!img){img=document.createElement('img');img.className=key==='photo'?'up-prev up-circle':'up-prev';box.appendChild(img)}
+  img.src=e.target.result;updFoot()};r.readAsDataURL(f)}
+function fmtNum(n){return (n||0).toString().replace(/\B(?=(\d{3})+(?!\d))/g,' ')}
+
+function show(n){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('s'+n).classList.add('active');
+  // progress (welcome=0 not counted, steps 1..5)
+  document.querySelectorAll('.step-dot').forEach((d,i)=>{d.className='step-dot'+(i<n-1?' done':i===n-1?' active':'')});
+  document.getElementById('steps').style.visibility=(n===0||n===6)?'hidden':'visible';
+  document.getElementById('btn-back').style.display=(n===0||n===6)?'none':'block';
+  document.getElementById('foot').style.display=n===6?'none':'flex';
+  const nb=document.getElementById('btn-next');
+  if(n===0)nb.textContent='Boshlash';
+  else if(n===5)nb.textContent='✅ Bronni yuborish';
+  else nb.textContent='Davom etish ›';
+  if(n===4){renderCats();renderDevs();initCal()}
+  if(n===5)renderConfirm();
+  document.querySelector('.body').scrollTop=0;
+  updFoot();
+}
+function updFoot(){
+  const nb=document.getElementById('btn-next');let ok=true;
+  if(step===1)ok=document.getElementById('r-phone').value.trim().length>=8;
+  if(step===2)ok=document.getElementById('r-ism').value.trim()&&document.getElementById('r-fam').value.trim()&&photos.pass;
+  if(step===3)ok=document.getElementById('agree-chk').checked;
+  if(step===4)ok=selDev&&sel.length>0;
+  nb.style.opacity=ok?'1':'.45';nb.style.pointerEvents=ok?'auto':'none';
+}
+['r-ism','r-fam'].forEach(id=>document.addEventListener('input',e=>{if(e.target.id===id)updFoot()}));
+
+function next(){
+  if(step===2&&!photos.pass){alert('Pasport rasmini yuklang');return}
+  if(step<MAX){step++;show(step)}
+}
+function back(){if(step>0){step--;show(step)}}
+
+/* CATEGORIES & DEVICES */
+function renderCats(){
+  document.getElementById('cat-pills').innerHTML=cats.map(c=>`<div class="cat-pill ${c.id===curCat?'active':''}" onclick="pickCat('${c.id}')">${c.name}</div>`).join('');
+}
+function pickCat(id){curCat=id;renderCats();renderDevs()}
+function renderDevs(){
+  const c=cats.find(x=>x.id===curCat);
+  document.getElementById('dev-list').innerHTML=c.devs.map((d,i)=>{
+    const key=curCat+'_'+i;const isSel=selDev&&selDev.key===key;
+    return `<div class="dev ${isSel?'sel':''}" onclick='pickDev(${JSON.stringify({key,ico:d.ico,name:d.name,price:d.price,stock:d.stock})})'>
+      <div class="dico">${d.ico}</div>
+      <div><div class="dn">${d.name}</div><div class="dp">${fmtNum(d.price)} so'm / kun</div><div class="dstock">Omborda: ${d.stock} dona ✓</div></div>
+      <div class="dcheck">${isSel?'✓':''}</div></div>`;
+  }).join('');
+}
+function pickDev(d){selDev=d;renderDevs();updFoot()}
+
+/* CALENDAR */
+const mU=['Yanvar','Fevral','Mart','Aprel','May','Iyun','Iyul','Avgust','Sentyabr','Oktyabr','Noyabr','Dekabr'];
+function initCal(){const n=new Date();calY=n.getFullYear();calM=n.getMonth();drawCal()}
+function drawCal(){
+  const n=new Date();const todayIso=iso(n.getFullYear(),n.getMonth(),n.getDate());
+  let h=`<div class="cal-top"><button class="cal-nav" onclick="movC(-1)">‹</button><div class="cal-my">${mU[calM]} ${calY}</div><button class="cal-nav" onclick="movC(1)">›</button></div><div class="cal-grid">`;
+  ['Du','Se','Ch','Pa','Ju','Sh','Ya'].forEach(d=>h+=`<div class="cal-dn">${d}</div>`);
+  const first=new Date(calY,calM,1).getDay(),off=first===0?6:first-1;
+  for(let i=0;i<off;i++)h+='<div class="cal-d empty"></div>';
+  const days=new Date(calY,calM+1,0).getDate();const s=sel.slice().sort();
+  for(let d=1;d<=days;d++){const it=iso(calY,calM,d);let c='cal-d';
+    if(it===todayIso)c+=' today';
+    if(sel.includes(it))c+=' sel';
+    if(sel.length===2&&it>s[0]&&it<s[1])c+=' range';
+    h+=`<div class="${c}" onclick="pickD('${it}')">${d}</div>`;}
+  h+='</div>';document.getElementById('cal').innerHTML=h;
+}
+function iso(y,m,d){return y+'-'+String(m+1).padStart(2,'0')+'-'+String(d).padStart(2,'0')}
+function movC(x){calM+=x;if(calM>11){calM=0;calY++}if(calM<0){calM=11;calY--}drawCal()}
+function pickD(it){if(sel.includes(it))sel=sel.filter(x=>x!==it);else{if(sel.length>=2)sel=[it];else sel.push(it)}drawCal();updFoot()}
+function fmtD(it){const p=it.split('-');return p[2]+'.'+p[1]+'.'+p[0]}
+
+/* CONFIRM */
+function renderConfirm(){
+  const s=sel.slice().sort();const from=s[0],to=s[1]||s[0];
+  const days=s[1]?Math.round((new Date(to)-new Date(from))/86400000)+1:1;
+  const total=selDev.price*days;
+  document.getElementById('confirm-sum').innerHTML=`
+    <div class="sum-row"><span class="k">Mijoz</span><span class="v">${document.getElementById('r-ism').value} ${document.getElementById('r-fam').value}</span></div>
+    <div class="sum-row"><span class="k">Telefon</span><span class="v">${document.getElementById('r-phone').value}</span></div>
+    <div class="sum-row"><span class="k">Texnika</span><span class="v">${selDev.ico} ${selDev.name}</span></div>
+    <div class="sum-row"><span class="k">Sana</span><span class="v">${fmtD(from)}${s[1]?' → '+fmtD(to):''}</span></div>
+    <div class="sum-row"><span class="k">Vaqt</span><span class="v">${document.getElementById('t1').value} – ${document.getElementById('t2').value}</span></div>
+    <div class="sum-row"><span class="k">Muddat</span><span class="v">${days} kun</span></div>
+    <div class="sum-total"><span class="k">Jami (taxminiy)</span><span class="v">${fmtNum(total)} so'm</span></div>`;
+}
+show(0);
+</script>
+</body>
+</html>
